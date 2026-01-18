@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Winn Publishing Project Estimator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Optional: reset weird browser defaults -->
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #f7f7f7;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wp-winncalc" id="wp-winncalc-1">
+  <div class="winncalc-card">
+    <div class="winncalc-title">Winn Publications Project Estimator</div>
+    <div class="winncalc-hint">Answer a few quick questions to get an estimate and payment plan preview.</div>
+
+    <label class="winncalc-label" for="winncalc-genre">1) Select your genre</label>
+    <select class="winncalc-input" id="winncalc-genre">
+      <option value="">Select…</option>
+
+      <optgroup label="Specialty Genres (published in)">
+        <option value="childrens" data-tier="specialty">Children’s</option>
+        <option value="fantasy" data-tier="specialty">Fantasy</option>
+        <option value="poetry" data-tier="specialty">Poetry</option>
+        <option value="cookbook" data-tier="specialty">Cookbook</option>
+        <option value="journal" data-tier="specialty">Journal</option>
+        <option value="workbook" data-tier="specialty">Workbook</option>
+        <option value="memoir" data-tier="specialty">Memoir</option>
+        <option value="mystery" data-tier="specialty">Mystery</option>
+        <option value="religious" data-tier="specialty">Religious</option>
+        <option value="romantic_suspense" data-tier="specialty">Romantic Suspense</option>
+        <option value="self_help" data-tier="specialty">Self-Help</option>
+        <option value="social_issue" data-tier="specialty">Social Issue</option>
+        <option value="spiritual" data-tier="specialty">Spiritual</option>
+        <option value="thriller" data-tier="specialty">Thriller</option>
+        <option value="travel" data-tier="specialty">Travel</option>
+        <option value="young_adult" data-tier="specialty">Young Adult</option>
+      </optgroup>
+
+      <optgroup label="Expansion Genres (goal list)">
+        <option value="science_fiction" data-tier="expansion">Science Fiction</option>
+        <option value="romance" data-tier="expansion">Romance</option>
+        <option value="historical_fiction" data-tier="expansion">Historical Fiction</option>
+        <option value="horror" data-tier="expansion">Horror</option>
+        <option value="anthology" data-tier="expansion">Anthology</option>
+        <option value="graphic_novel" data-tier="expansion">Graphic Novels</option>
+        <option value="adventure" data-tier="expansion">Adventure</option>
+        <option value="humor" data-tier="expansion">Humor</option>
+        <option value="dystopian" data-tier="expansion">Dystopian</option>
+        <option value="lgbtq" data-tier="expansion">LGBTQ+ Literature</option>
+        <option value="health_wellness" data-tier="expansion">Health & Wellness</option>
+        <option value="womens_fiction" data-tier="expansion">Women’s Fiction</option>
+      </optgroup>
+
+      <option value="other" data-tier="other">Other (type your genre)</option>
+    </select>
+
+    <div class="winncalc-hidden" id="winncalc-otherGenreWrap">
+      <label class="winncalc-label" for="winncalc-otherGenre">Type your genre</label>
+      <input class="winncalc-input" id="winncalc-otherGenre" type="text" placeholder="e.g., Paranormal Romance" />
+    </div>
+  </div>
+
+  <div class="winncalc-card winncalc-hidden" id="winncalc-typeCard">
+    <div class="winncalc-subtitle">2) Book Type</div>
+
+    <label class="winncalc-label" for="winncalc-bookType">Select your book type</label>
+    <select class="winncalc-input" id="winncalc-bookType">
+      <option value="text">Text-only book (most fiction & nonfiction)</option>
+      <option value="childrens">Children’s book (illustrated)</option>
+      <option value="cookbook">Cookbook (layout heavy)</option>
+      <option value="workbook">Workbook / Journal (layout heavy)</option>
+      <option value="graphic">Graphic novel / anthology (complex layout)</option>
+    </select>
+
+    <div class="winncalc-hint">We auto-suggest a type based on your genre. You can adjust if needed.</div>
+  </div>
+
+  <div class="winncalc-card winncalc-hidden" id="winncalc-lengthCard">
+    <div class="winncalc-subtitle">3) Length</div>
+
+    <div id="winncalc-wordCountWrap">
+      <label class="winncalc-label" for="winncalc-wordCount">Approx. word count</label>
+      <input class="winncalc-input" id="winncalc-wordCount" type="number" min="0" step="1000" placeholder="e.g., 60000" />
+      <div class="winncalc-hint">Used to estimate layout and production scope.</div>
+    </div>
+
+    <div class="winncalc-hidden" id="winncalc-childrenPagesWrap">
+      <label class="winncalc-label" for="winncalc-childrenPages">How many illustrated pages?</label>
+      <input class="winncalc-input" id="winncalc-childrenPages" type="number" min="0" step="1" placeholder="e.g., 24" />
+
+      <label class="winncalc-label" for="winncalc-hasIllustrations">Do you already have illustrations provided?</label>
+      <select class="winncalc-input" id="winncalc-hasIllustrations">
+        <option value="yes">Yes (illustrations provided)</option>
+        <option value="no">No</option>
+      </select>
+
+      <div class="winncalc-hidden" id="winncalc-illustrationMethodWrap">
+        <label class="winncalc-label" for="winncalc-illustrationMethod">Illustration method</label>
+        <select class="winncalc-input" id="winncalc-illustrationMethod">
+          <option value="">Select…</option>
+          <option value="ai">AI illustrations ($30/page)</option>
+          <option value="custom">Custom illustrator (quote after review)</option>
+          <option value="unsure">Not sure yet</option>
+        </select>
+
+        <div class="winncalc-hidden winncalc-hint" id="winncalc-storyboardWrap">
+          <label class="winncalc-label" for="winncalc-hasStoryboard">Do you already have a storyboard?</label>
+          <select class="winncalc-input" id="winncalc-hasStoryboard">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+
+          <div class="winncalc-hidden winncalc-hint" id="winncalc-storyboardDemoWrap">
+            If you don’t have one yet, view a storyboard demo:
+            <a class="winncalc-link" href="REPLACE_WITH_YOUR_STORYBOARD_DEMO_URL" target="_blank" rel="noopener">Storyboard demo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="winncalc-hidden" id="winncalc-pageCountWrap">
+      <label class="winncalc-label" for="winncalc-pageCount">Approx. page count</label>
+      <input class="winncalc-input" id="winncalc-pageCount" type="number" min="0" step="1" placeholder="e.g., 120" />
+      <div class="winncalc-hint">Used for workbook/cookbook/graphic layout complexity.</div>
+    </div>
+  </div>
+
+  <div class="winncalc-card winncalc-hidden" id="winncalc-servicesCard">
+    <div class="winncalc-subtitle">4) Services Needed</div>
+
+    <div class="winncalc-grid">
+      <label class="winncalc-check"><input type="checkbox" id="svc-ebook" /> eBook formatting</label>
+      <label class="winncalc-check"><input type="checkbox" id="svc-print" /> Paperback formatting</label>
+      <label class="winncalc-check"><input type="checkbox" id="svc-cover" /> Cover design</label>
+      <label class="winncalc-check"><input type="checkbox" id="svc-isbn" /> ISBN registration</label>
+      <label class="winncalc-check"><input type="checkbox" id="svc-upload" /> Upload + platform setup</label>
+      <label class="winncalc-check"><input type="checkbox" id="svc-launch" /> Launch kit (basic)</label>
+    </div>
+
+    <div class="winncalc-hint">Tip: If you’re not sure, leave services unchecked and we’ll confirm on your consult.</div>
+  </div>
+
+  <div class="winncalc-card winncalc-hidden" id="winncalc-payCard">
+    <div class="winncalc-subtitle">5) Timeline & Payments</div>
+
+    <label class="winncalc-label" for="winncalc-timeline">Timeline</label>
+    <select class="winncalc-input" id="winncalc-timeline">
+      <option value="standard">Standard (about 3 months)</option>
+      <option value="priority">Priority (3–4 weeks)</option>
+    </select>
+
+    <label class="winncalc-label" for="winncalc-pubdate">Desired publish date</label>
+    <input class="winncalc-input" id="winncalc-pubdate" type="date" />
+
+    <label class="winncalc-label" for="winncalc-payplan">Payment option</label>
+    <select class="winncalc-input" id="winncalc-payplan">
+      <option value="monthly">Monthly payments</option>
+      <option value="full">Pay in full (20% off)</option>
+    </select>
+
+    <div class="winncalc-hint" id="winncalc-paypolicy"></div>
+    <div class="winncalc-summary winncalc-hint" id="winncalc-paymentSummary"></div>
+    <div class="winncalc-hint winncalc-disclaimer" id="winncalc-disclaimer"></div>
+  </div>
+
+  <div class="winncalc-card winncalc-hidden" id="winncalc-estimateCard">
+    <div class="winncalc-subtitle">Estimate</div>
+    <div class="winncalc-summary winncalc-hint" id="winncalc-summary">Complete the steps above to see your estimate.</div>
+
+    <div class="winncalc-totalLabel">Estimated Investment</div>
+    <div class="winncalc-total" id="winncalc-total">$0</div>
+
+    <div class="winncalc-hint" id="winncalc-savings"></div>
+  </div>
+
+  <style>
+    .wp-winncalc { max-width: 760px; font-family: Arial, sans-serif; line-height: 1.35; }
+    .wp-winncalc .winncalc-card {
+      border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff;
+    }
+    .wp-winncalc .winncalc-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .wp-winncalc .winncalc-subtitle { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+    .wp-winncalc .winncalc-label { display: block; margin: 12px 0 6px; font-weight: 700; }
+    .wp-winncalc .winncalc-input {
+      width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 14px; box-sizing: border-box;
+    }
+    .wp-winncalc .winncalc-hint { color: #666; font-size: 14px; margin-top: 6px; }
+    .wp-winncalc .winncalc-totalLabel { font-size: 14px; font-weight: 800; margin-top: 12px; }
+    .wp-winncalc .winncalc-total { font-size: 26px; font-weight: 900; margin-top: 6px; }
+    .wp-winncalc .winncalc-hidden { display: none; }
+    .wp-winncalc .winncalc-link { text-decoration: none; }
+    .wp-winncalc .winncalc-link:hover { text-decoration: underline; }
+    .wp-winncalc .winncalc-summary { margin-top: 6px; }
+    .wp-winncalc .winncalc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+    .wp-winncalc .winncalc-check { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+    .wp-winncalc .winncalc-warning { font-weight: 800; }
+    .wp-winncalc .winncalc-disclaimer { margin-top: 10px; }
+  </style>
+
+  <script>
+    (function () {
+      const root = document.getElementById('wp-winncalc-1');
+      if (!root) return;
+
+      // ---------- PRICING SETTINGS (EDIT THESE ANYTIME) ----------
+      const PRICING = {
+        // Book type base prices
+        base: {
+          text: 1800,
+          childrens: 2400,   // illustrations provided
+          cookbook: 2600,
+          workbook: 2200,
+          graphic: 3200
+        },
+
+        // Word count add-ons for text-only
+        wordAdders: [
+          { max: 30000, add: 0 },
+          { max: 60000, add: 300 },
+          { max: 90000, add: 600 },
+          { max: 120000, add: 900 },
+          { max: Infinity, add: 1200 }
+        ],
+
+        // Page adders for layout-heavy types (simple starter)
+        // (Feel free to tweak — this is a reasonable baseline)
+        pageAdders: [
+          { max: 100, add: 0 },
+          { max: 200, add: 250 },
+          { max: 300, add: 500 },
+          { max: Infinity, add: 750 }
+        ],
+
+        // Genre premiums
+        genrePremium: {
+          specialty: 150,
+          expansion: 75,
+          other: 0
+        },
+
+        // Children AI illustration cost
+        aiIllustrationPerPage: 30,
+
+        // Payment / timeline
+        fullPayDiscountRate: 0.20,   // 20% off
+        priorityRushRate: 0.25       // +25% rush fee
+      };
+
+      // ---------- ELEMENTS ----------
+      const genre = root.querySelector('#winncalc-genre');
+      const otherGenreWrap = root.querySelector('#winncalc-otherGenreWrap');
+      const otherGenre = root.querySelector('#winncalc-otherGenre');
+
+      const typeCard = root.querySelector('#winncalc-typeCard');
+      const bookType = root.querySelector('#winncalc-bookType');
+
+      const lengthCard = root.querySelector('#winncalc-lengthCard');
+      const wordCountWrap = root.querySelector('#winncalc-wordCountWrap');
+      const wordCount = root.querySelector('#winncalc-wordCount');
+
+      const pageCountWrap = root.querySelector('#winncalc-pageCountWrap');
+      const pageCount = root.querySelector('#winncalc-pageCount');
+
+      const childrenPagesWrap = root.querySelector('#winncalc-childrenPagesWrap');
+      const childrenPages = root.querySelector('#winncalc-childrenPages');
+      const hasIllustrations = root.querySelector('#winncalc-hasIllustrations');
+      const illustrationMethodWrap = root.querySelector('#winncalc-illustrationMethodWrap');
+      const illustrationMethod = root.querySelector('#winncalc-illustrationMethod');
+      const storyboardWrap = root.querySelector('#winncalc-storyboardWrap');
+      const hasStoryboard = root.querySelector('#winncalc-hasStoryboard');
+      const storyboardDemoWrap = root.querySelector('#winncalc-storyboardDemoWrap');
+
+      const servicesCard = root.querySelector('#winncalc-servicesCard');
+      const svc = {
+        ebook: root.querySelector('#svc-ebook'),
+        print: root.querySelector('#svc-print'),
+        cover: root.querySelector('#svc-cover'),
+        isbn: root.querySelector('#svc-isbn'),
+        upload: root.querySelector('#svc-upload'),
+        launch: root.querySelector('#svc-launch')
+      };
+
+      const payCard = root.querySelector('#winncalc-payCard');
+      const timeline = root.querySelector('#winncalc-timeline');
+      const pubdate = root.querySelector('#winncalc-pubdate');
+      const payplan = root.querySelector('#winncalc-payplan');
+      const paypolicy = root.querySelector('#winncalc-paypolicy');
+      const paymentSummary = root.querySelector('#winncalc-paymentSummary');
+      const disclaimer = root.querySelector('#winncalc-disclaimer');
+
+      const estimateCard = root.querySelector('#winncalc-estimateCard');
+      const summary = root.querySelector('#winncalc-summary');
+      const totalEl = root.querySelector('#winncalc-total');
+      const savingsEl = root.querySelector('#winncalc-savings');
+
+      // ---------- HELPERS ----------
+      function money(n) {
+        return n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+      }
+
+      function roundCents(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      function addDays(d, days) {
+        const x = new Date(d);
+        x.setDate(x.getDate() + days);
+        return x;
+      }
+
+      function toISODate(d) {
+        const x = new Date(d);
+        const yyyy = x.getFullYear();
+        const mm = String(x.getMonth() + 1).padStart(2, '0');
+        const dd = String(x.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      function monthsBetweenInclusive(startDate, endDate) {
+        const s = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+        const e = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+        let months = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth()) + 1;
+        return Math.max(1, months);
+      }
+
+      function buildMonthlySchedule(total, startDate, publishDate) {
+        const nMonths = monthsBetweenInclusive(startDate, publishDate);
+
+        const base = Math.floor((total / nMonths) * 100) / 100;
+        let remainder = roundCents(total - base * nMonths);
+
+        const payments = [];
+        for (let i = 0; i < nMonths; i++) {
+          const due = new Date(startDate);
+          due.setMonth(due.getMonth() + i);
+
+          let amt = base;
+          if (remainder > 0) {
+            amt = roundCents(amt + 0.01);
+            remainder = roundCents(remainder - 0.01);
+          }
+          payments.push({ due, amt });
+        }
+        return payments;
+      }
+
+      function getGenreTier() {
+        const opt = genre.options[genre.selectedIndex];
+        return opt ? (opt.getAttribute('data-tier') || 'other') : 'other';
+      }
+
+      function suggestBookTypeFromGenre(genreVal) {
+        if (!genreVal) return 'text';
+        if (genreVal === 'childrens') return 'childrens';
+        if (genreVal === 'cookbook') return 'cookbook';
+        if (genreVal === 'journal' || genreVal === 'workbook') return 'workbook';
+        if (genreVal === 'graphic_novel' || genreVal === 'anthology') return 'graphic';
+        return 'text';
+      }
+
+      function wordAdderFor(count) {
+        const wc = Number(count || 0);
+        for (const tier of PRICING.wordAdders) {
+          if (wc <= tier.max) return tier.add;
+        }
+        return 0;
+      }
+
+      function pageAdderFor(pages) {
+        const pg = Number(pages || 0);
+        for (const tier of PRICING.pageAdders) {
+          if (pg <= tier.max) return tier.add;
+        }
+        return 0;
+      }
+
+      function servicesTotal() {
+        let t = 0;
+        // Starter pricing — adjust anytime
+        if (svc.ebook.checked) t += 350;
+        if (svc.print.checked) t += 450;
+        if (svc.cover.checked) t += 600;
+        if (svc.isbn.checked) t += 125;
+        if (svc.upload.checked) t += 200;
+        if (svc.launch.checked) t += 250;
+        return t;
+      }
+
+      // ---------- PAYMENTS ----------
+      function calcPayments(totalBeforePayments) {
+        const t = timeline.value;   // standard / priority
+        const plan = payplan.value; // monthly / full
+        const today = new Date();
+        const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        // Default publish date if empty
+        if (!pubdate.value) {
+          const defaultDays = (t === 'priority') ? 28 : 90;
+          pubdate.value = toISODate(addDays(today, defaultDays));
+        }
+
+        const publish = new Date(pubdate.value + "T00:00:00");
+
+        // Guardrails
+        if (publish < todayMidnight) {
+          paypolicy.innerHTML = `<span class="winncalc-warning">Publish date can’t be in the past.</span>`;
+          paymentSummary.innerHTML = '';
+          disclaimer.textContent = '';
+          savingsEl.textContent = '';
+          return { finalTotal: totalBeforePayments, dueToday: totalBeforePayments, discount: 0, rush: 0 };
+        }
+
+        // Priority rules + rush fee
+        let rush = 0;
+        if (t === 'priority') {
+          rush = roundCents(totalBeforePayments * PRICING.priorityRushRate);
+          payplan.value = 'full';
+          payplan.disabled = true;
+          paypolicy.innerHTML = `<span class="winncalc-warning">Priority projects include a 25% rush fee and require payment in full.</span>`;
+        } else {
+          payplan.disabled = false;
+          paypolicy.innerHTML = `Standard: payments allowed. Balance must be paid before publishing.`;
+        }
+
+        const totalWithRush = roundCents(totalBeforePayments + rush);
+
+        // Pay in full discount
+        let discount = 0;
+        let finalTotal = totalWithRush;
+
+        if (payplan.value === 'full') {
+          discount = roundCents(totalWithRush * PRICING.fullPayDiscountRate);
+          finalTotal = roundCents(totalWithRush - discount);
+
+          const savedLine = discount > 0 ? `You saved ${money(discount)} with pay in full.` : '';
+          savingsEl.textContent = savedLine;
+
+          const rushLine = rush > 0 ? `• Priority rush fee (25%): +${money(rush)}<br/>` : '';
+          paymentSummary.innerHTML =
+            `${rushLine}` +
+            `• Pay in full discount (20%): -${money(discount)}<br/>` +
+            `• Due today (upon signature): <strong>${money(finalTotal)}</strong><br/>` +
+            `• Remaining balance: ${money(0)}`;
+
+          disclaimer.textContent = 'This estimate is based on the information provided. Final pricing is confirmed after manuscript review.';
+          return { finalTotal, dueToday: finalTotal, discount, rush };
+        }
+
+        // Monthly plan (standard only)
+        savingsEl.textContent = '';
+        const schedule = buildMonthlySchedule(totalWithRush, today, publish);
+        const dueToday = schedule[0].amt;
+        const remaining = roundCents(schedule.slice(1).reduce((s, p) => s + p.amt, 0));
+
+        const lines = [];
+        if (rush > 0) lines.push(`• Priority rush fee (25%): +${money(rush)}`);
+        lines.push(`• Payment plan: ${schedule.length} monthly payment(s)`);
+        lines.push(`• Due today (upon signature): <strong>${money(dueToday)}</strong>`);
+        lines.push(`• Remaining balance: ${money(remaining)}`);
+        lines.push(`• Final payment due by: ${publish.toLocaleDateString('en-US')}`);
+
+        const preview = schedule.slice(0, Math.min(4, schedule.length)).map(p =>
+          `${p.due.toLocaleDateString('en-US')} — ${money(p.amt)}`
+        );
+        lines.push(`• Payment schedule (preview):<br/>${preview.join('<br/>')}` + (schedule.length > 4 ? `<br/>…` : ``));
+
+        paymentSummary.innerHTML = lines.join('<br/>');
+        disclaimer.textContent = 'This estimate is based on the information provided. Final pricing is confirmed after manuscript review.';
+        return { finalTotal: totalWithRush, dueToday, discount: 0, rush };
+      }
+
+      // ---------- MAIN CALC ----------
+      function calc() {
+        const g = genre.value;
+
+        // Reveal next cards once genre selected
+        const hasGenre = !!g;
+        typeCard.classList.toggle('winncalc-hidden', !hasGenre);
+
+        // Other genre input visibility
+        otherGenreWrap.classList.toggle('winncalc-hidden', g !== 'other');
+
+        if (!hasGenre) {
+          lengthCard.classList.add('winncalc-hidden');
+          servicesCard.classList.add('winncalc-hidden');
+          payCard.classList.add('winncalc-hidden');
+          estimateCard.classList.add('winncalc-hidden');
+          summary.textContent = 'Complete the steps above to see your estimate.';
+          totalEl.textContent = money(0);
+          savingsEl.textContent = '';
+          paymentSummary.innerHTML = '';
+          paypolicy.textContent = '';
+          disclaimer.textContent = '';
+          return;
+        }
+
+        // Auto-suggest type based on genre selection
+        const suggested = suggestBookTypeFromGenre(g);
+        if (!bookType.dataset.userChanged) {
+          bookType.value = suggested;
+        }
+
+        // Reveal length/services/pay/estimate cards
+        lengthCard.classList.remove('winncalc-hidden');
+        servicesCard.classList.remove('winncalc-hidden');
+        payCard.classList.remove('winncalc-hidden');
+        estimateCard.classList.remove('winncalc-hidden');
+
+        // Show correct length inputs for type
+        const bt = bookType.value;
+
+        // Reset visibility
+        wordCountWrap.classList.add('winncalc-hidden');
+        pageCountWrap.classList.add('winncalc-hidden');
+        childrenPagesWrap.classList.add('winncalc-hidden');
+
+        if (bt === 'text') {
+          wordCountWrap.classList.remove('winncalc-hidden');
+        } else if (bt === 'childrens') {
+          childrenPagesWrap.classList.remove('winncalc-hidden');
+        } else if (bt === 'cookbook' || bt === 'workbook' || bt === 'graphic') {
+          pageCountWrap.classList.remove('winncalc-hidden');
+        }
+
+        // Children illustration logic
+        if (bt === 'childrens') {
+          const provided = hasIllustrations.value === 'yes';
+          illustrationMethodWrap.classList.toggle('winncalc-hidden', provided);
+
+          if (provided) {
+            storyboardWrap.classList.add('winncalc-hidden');
+            storyboardDemoWrap.classList.add('winncalc-hidden');
+          } else {
+            const method = illustrationMethod.value;
+            const showAIPath = method === 'ai';
+            storyboardWrap.classList.toggle('winncalc-hidden', !showAIPath);
+
+            if (showAIPath) {
+              const missing = hasStoryboard.value === 'no';
+              storyboardDemoWrap.classList.toggle('winncalc-hidden', !missing);
+            } else {
+              storyboardDemoWrap.classList.add('winncalc-hidden');
+            }
+          }
+        }
+
+        // --- Build price ---
+        let total = 0;
+        let lines = [];
+
+        // Base by type
+        const base = PRICING.base[bt] ?? 0;
+        total += base;
+        lines.push(`Base (${bt.replace('_',' ')}): ${money(base)}`);
+
+        // Length adders
+        if (bt === 'text') {
+          const wc = Number(wordCount.value || 0);
+          const add = wordAdderFor(wc);
+          total += add;
+          lines.push(`Length (word count: ${wc.toLocaleString('en-US')}): ${money(add)}`);
+        }
+
+        if (bt === 'cookbook' || bt === 'workbook' || bt === 'graphic') {
+          const pg = Number(pageCount.value || 0);
+          const add = pageAdderFor(pg);
+          total += add;
+          lines.push(`Length (page count: ${pg}): ${money(add)}`);
+        }
+
+        if (bt === 'childrens') {
+          const pages = Number(childrenPages.value || 0);
+          lines.push(`Illustrated pages: ${pages}`);
+
+          if (hasIllustrations.value === 'no') {
+            if (illustrationMethod.value === 'ai') {
+              const aiCost = PRICING.aiIllustrationPerPage * pages;
+              total += aiCost;
+              lines.push(`AI illustrations ($${PRICING.aiIllustrationPerPage}/page): ${money(aiCost)}`);
+            } else if (illustrationMethod.value === 'custom') {
+              lines.push('Custom illustrator: quote after review (not included in estimate).');
+            } else if (illustrationMethod.value === 'unsure') {
+              lines.push('Illustrations not decided yet: we’ll confirm options on your consult.');
+            } else {
+              lines.push('Select an illustration method to refine estimate.');
+            }
+          } else {
+            lines.push('Illustrations provided by author: included in base.');
+          }
+        }
+
+        // Genre premium
+        const tier = getGenreTier();
+        const premium = PRICING.genrePremium[tier] ?? 0;
+        total += premium;
+
+        const genreLabel = (g === 'other' && otherGenre.value) ? otherGenre.value : genre.options[genre.selectedIndex].text;
+        lines.push(`Genre (${genreLabel}) premium: ${money(premium)}`);
+
+        // Services
+        const svcTotal = servicesTotal();
+        total += svcTotal;
+        lines.push(`Selected services: ${money(svcTotal)}`);
+
+        // Payment & timeline adjustments (rush/discount etc.)
+        const paymentInfo = calcPayments(total);
+
+        // Display
+        summary.innerHTML = lines.map(l => `• ${l}`).join('<br/>');
+        totalEl.textContent = money(paymentInfo.finalTotal);
+
+        // If priority, ensure publish date feels consistent
+        // (We don't force it, but we do keep payment rules consistent.)
+      }
+
+      // Mark type as user-changed if they manually change it
+      bookType.addEventListener('change', function () {
+        bookType.dataset.userChanged = 'true';
+        calc();
+      });
+
+      // Events
+      [
+        genre, otherGenre,
+        wordCount, pageCount,
+        childrenPages, hasIllustrations, illustrationMethod, hasStoryboard,
+        svc.ebook, svc.print, svc.cover, svc.isbn, svc.upload, svc.launch,
+        timeline, pubdate, payplan
+      ].forEach(el => el && el.addEventListener('input', calc));
+
+      // Initialize
+      calc();
+    })();
+  </script>
+</div>
+</body>
+</html>
