@@ -58,7 +58,7 @@
     <select class="winncalc-input" id="winncalc-bookType">
       <option value="text">Text-only book (most fiction & nonfiction)</option>
       <option value="childrens">Children’s book (illustrated)</option>
-      <option value="coloring">Coloring book (illustrated)</option>
+      <option value="coloring">Coloring book</option>
       <option value="cookbook">Cookbook (layout heavy)</option>
       <option value="workbook">Workbook / Journal (layout heavy)</option>
       <option value="graphic">Graphic novel / anthology (complex layout)</option>
@@ -70,7 +70,7 @@
   <div class="winncalc-card winncalc-hidden" id="winncalc-lengthCard">
     <div class="winncalc-subtitle">3) Length</div>
 
-    <div id="winncalc-wordCountWrap">
+    <div class="winncalc-hidden" id="winncalc-wordCountWrap">
       <label class="winncalc-label" for="winncalc-wordCount">Approx. word count</label>
       <input class="winncalc-input" id="winncalc-wordCount" type="number" min="0" step="1000" placeholder="e.g., 60000" />
       <div class="winncalc-hint">Used to estimate layout and production scope.</div>
@@ -112,8 +112,21 @@
 
     <div class="winncalc-hidden" id="winncalc-pageCountWrap">
       <label class="winncalc-label" for="winncalc-pageCount">Approx. page count</label>
-      <input class="winncalc-input" id="winncalc-pageCount" type="number" min="0" step="1" placeholder="e.g., 120" />
-      <div class="winncalc-hint">Used for workbook/cookbook/graphic layout complexity.</div>
+      <input class="winncalc-input" id="winncalc-pageCount" type="number" min="0" step="1" placeholder="e.g., 48" />
+      <div class="winncalc-hint" id="winncalc-pageHint">Used for workbook/cookbook/graphic layout complexity.</div>
+
+      <div class="winncalc-hidden" id="winncalc-coloringIllustrationsWrap">
+        <label class="winncalc-label" for="winncalc-coloringHasIllustrations">Do you already have your coloring illustrations?</label>
+        <select class="winncalc-input" id="winncalc-coloringHasIllustrations">
+          <option value="yes">Yes (I’m providing my own illustrations)</option>
+          <option value="no">No (I need help creating them)</option>
+        </select>
+
+        <div class="winncalc-hint" id="winncalc-coloringAIHint">
+          If you don’t have illustrations, we’ll build your coloring book from start to publish using AI together.
+          You receive full creator credit; Winn Publications receives publishing credit.
+        </div>
+      </div>
     </div>
   </div>
 
@@ -129,7 +142,7 @@
       <label class="winncalc-check"><input type="checkbox" id="svc-launch" /> Launch kit (basic)</label>
     </div>
 
-    <div class="winncalc-hint">Tip: If you’re not sure, leave services unchecked and we’ll confirm on your consult.</div>
+    <div class="winncalc-hint">Tip: Select the deliverables you want included in your estimate.</div>
   </div>
 
   <div class="winncalc-card winncalc-hidden" id="winncalc-payCard">
@@ -183,8 +196,28 @@
     .wp-winncalc .winncalc-link { text-decoration: none; }
     .wp-winncalc .winncalc-link:hover { text-decoration: underline; }
     .wp-winncalc .winncalc-summary { margin-top: 6px; }
-    .wp-winncalc .winncalc-grid{ display: flex;   flex-wrap: wrap;   /* wraps nicely on mobile */   gap: 10px 16px;   margin-top: 8px; }
-    .wp-winncalc .winncalc-check { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+
+    /* ✅ Deliverables row chips */
+    .wp-winncalc .winncalc-grid{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 8px;
+    }
+    .wp-winncalc .winncalc-check{
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 700;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+    .wp-winncalc .winncalc-check input{ transform: scale(1.15); }
+
     .wp-winncalc .winncalc-warning { font-weight: 800; }
     .wp-winncalc .winncalc-disclaimer { margin-top: 10px; }
   </style>
@@ -194,18 +227,20 @@
       const root = document.getElementById('wp-winncalc-1');
       if (!root) return;
 
-      // ---------- PRICING SETTINGS (EDIT THESE ANYTIME) ----------
+      // ---------- PRICING SETTINGS ----------
       const PRICING = {
-        // Book type base prices
         base: {
           text: 1800,
-          childrens: 2400,   // illustrations provided
+          childrens: 2400,
+          coloring: 800,     // ✅ Coloring book base price
           cookbook: 2600,
           workbook: 2200,
           graphic: 3200
         },
 
-        // Word count add-ons for text-only
+        // ✅ Coloring per-page cost
+        coloringPerPage: 7.50,
+
         wordAdders: [
           { max: 30000, add: 0 },
           { max: 60000, add: 300 },
@@ -214,8 +249,6 @@
           { max: Infinity, add: 1200 }
         ],
 
-        // Page adders for layout-heavy types (simple starter)
-        // (Feel free to tweak — this is a reasonable baseline)
         pageAdders: [
           { max: 100, add: 0 },
           { max: 200, add: 250 },
@@ -223,19 +256,16 @@
           { max: Infinity, add: 750 }
         ],
 
-        // Genre premiums
         genrePremium: {
           specialty: 150,
           expansion: 75,
           other: 0
         },
 
-        // Children AI illustration cost
         aiIllustrationPerPage: 30,
 
-        // Payment / timeline
-        fullPayDiscountRate: 0.20,   // 20% off
-        priorityRushRate: 0.25       // +25% rush fee
+        fullPayDiscountRate: 0.20,
+        priorityRushRate: 0.25
       };
 
       // ---------- ELEMENTS ----------
@@ -252,6 +282,11 @@
 
       const pageCountWrap = root.querySelector('#winncalc-pageCountWrap');
       const pageCount = root.querySelector('#winncalc-pageCount');
+      const pageHint = root.querySelector('#winncalc-pageHint');
+
+      const coloringIllustrationsWrap = root.querySelector('#winncalc-coloringIllustrationsWrap');
+      const coloringHasIllustrations = root.querySelector('#winncalc-coloringHasIllustrations');
+      const coloringAIHint = root.querySelector('#winncalc-coloringAIHint');
 
       const childrenPagesWrap = root.querySelector('#winncalc-childrenPagesWrap');
       const childrenPages = root.querySelector('#winncalc-childrenPages');
@@ -287,7 +322,8 @@
 
       // ---------- HELPERS ----------
       function money(n) {
-        return n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        const num = Number(n || 0);
+        return num.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
       }
 
       function roundCents(n) {
@@ -317,7 +353,6 @@
 
       function buildMonthlySchedule(total, startDate, publishDate) {
         const nMonths = monthsBetweenInclusive(startDate, publishDate);
-
         const base = Math.floor((total / nMonths) * 100) / 100;
         let remainder = roundCents(total - base * nMonths);
 
@@ -344,6 +379,7 @@
       function suggestBookTypeFromGenre(genreVal) {
         if (!genreVal) return 'text';
         if (genreVal === 'childrens') return 'childrens';
+        if (genreVal === 'coloring') return 'coloring';
         if (genreVal === 'cookbook') return 'cookbook';
         if (genreVal === 'journal' || genreVal === 'workbook') return 'workbook';
         if (genreVal === 'graphic_novel' || genreVal === 'anthology') return 'graphic';
@@ -368,7 +404,6 @@
 
       function servicesTotal() {
         let t = 0;
-        // Starter pricing — adjust anytime
         if (svc.ebook.checked) t += 350;
         if (svc.print.checked) t += 450;
         if (svc.cover.checked) t += 600;
@@ -381,11 +416,9 @@
       // ---------- PAYMENTS ----------
       function calcPayments(totalBeforePayments) {
         const t = timeline.value;   // standard / priority
-        const plan = payplan.value; // monthly / full
         const today = new Date();
         const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-        // Default publish date if empty
         if (!pubdate.value) {
           const defaultDays = (t === 'priority') ? 28 : 90;
           pubdate.value = toISODate(addDays(today, defaultDays));
@@ -393,7 +426,6 @@
 
         const publish = new Date(pubdate.value + "T00:00:00");
 
-        // Guardrails
         if (publish < todayMidnight) {
           paypolicy.innerHTML = `<span class="winncalc-warning">Publish date can’t be in the past.</span>`;
           paymentSummary.innerHTML = '';
@@ -402,7 +434,6 @@
           return { finalTotal: totalBeforePayments, dueToday: totalBeforePayments, discount: 0, rush: 0 };
         }
 
-        // Priority rules + rush fee
         let rush = 0;
         if (t === 'priority') {
           rush = roundCents(totalBeforePayments * PRICING.priorityRushRate);
@@ -416,7 +447,6 @@
 
         const totalWithRush = roundCents(totalBeforePayments + rush);
 
-        // Pay in full discount
         let discount = 0;
         let finalTotal = totalWithRush;
 
@@ -424,8 +454,7 @@
           discount = roundCents(totalWithRush * PRICING.fullPayDiscountRate);
           finalTotal = roundCents(totalWithRush - discount);
 
-          const savedLine = discount > 0 ? `You saved ${money(discount)} with pay in full.` : '';
-          savingsEl.textContent = savedLine;
+          savingsEl.textContent = discount > 0 ? `You saved ${money(discount)} with pay in full.` : '';
 
           const rushLine = rush > 0 ? `• Priority rush fee (25%): +${money(rush)}<br/>` : '';
           paymentSummary.innerHTML =
@@ -438,7 +467,6 @@
           return { finalTotal, dueToday: finalTotal, discount, rush };
         }
 
-        // Monthly plan (standard only)
         savingsEl.textContent = '';
         const schedule = buildMonthlySchedule(totalWithRush, today, publish);
         const dueToday = schedule[0].amt;
@@ -465,11 +493,9 @@
       function calc() {
         const g = genre.value;
 
-        // Reveal next cards once genre selected
         const hasGenre = !!g;
         typeCard.classList.toggle('winncalc-hidden', !hasGenre);
 
-        // Other genre input visibility
         otherGenreWrap.classList.toggle('winncalc-hidden', g !== 'other');
 
         if (!hasGenre) {
@@ -486,35 +512,41 @@
           return;
         }
 
-        // Auto-suggest type based on genre selection
         const suggested = suggestBookTypeFromGenre(g);
         if (!bookType.dataset.userChanged) {
           bookType.value = suggested;
         }
 
-        // Reveal length/services/pay/estimate cards
         lengthCard.classList.remove('winncalc-hidden');
         servicesCard.classList.remove('winncalc-hidden');
         payCard.classList.remove('winncalc-hidden');
         estimateCard.classList.remove('winncalc-hidden');
 
-        // Show correct length inputs for type
         const bt = bookType.value;
 
         // Reset visibility
         wordCountWrap.classList.add('winncalc-hidden');
         pageCountWrap.classList.add('winncalc-hidden');
         childrenPagesWrap.classList.add('winncalc-hidden');
+        coloringIllustrationsWrap.classList.add('winncalc-hidden');
 
         if (bt === 'text') {
           wordCountWrap.classList.remove('winncalc-hidden');
         } else if (bt === 'childrens') {
           childrenPagesWrap.classList.remove('winncalc-hidden');
-        } else if (bt === 'cookbook' || bt === 'workbook' || bt === 'graphic') {
+        } else if (bt === 'coloring' || bt === 'cookbook' || bt === 'workbook' || bt === 'graphic') {
           pageCountWrap.classList.remove('winncalc-hidden');
         }
 
-        // Children illustration logic
+        // Coloring behavior
+        if (bt === 'coloring') {
+          coloringIllustrationsWrap.classList.remove('winncalc-hidden');
+          pageHint.textContent = 'Used to estimate coloring book scope.';
+        } else {
+          pageHint.textContent = 'Used for workbook/cookbook/graphic layout complexity.';
+        }
+
+        // Children illustration logic ONLY for childrens
         if (bt === 'childrens') {
           const provided = hasIllustrations.value === 'yes';
           illustrationMethodWrap.classList.toggle('winncalc-hidden', provided);
@@ -553,6 +585,22 @@
           lines.push(`Length (word count: ${wc.toLocaleString('en-US')}): ${money(add)}`);
         }
 
+        // Coloring pricing: $800 base + $7.50/page
+        if (bt === 'coloring') {
+          const pg = Number(pageCount.value || 0);
+          const perPage = roundCents(pg * PRICING.coloringPerPage);
+          total += perPage;
+
+          lines.push(`Coloring pages (page count: ${pg}): ${money(perPage)}`);
+
+          if (coloringHasIllustrations.value === 'no') {
+            lines.push(`AI-assisted creation: included (done with you).`);
+          } else {
+            lines.push(`Illustrations provided by author: included.`);
+          }
+        }
+
+        // Other layout-heavy types use pageAdders
         if (bt === 'cookbook' || bt === 'workbook' || bt === 'graphic') {
           const pg = Number(pageCount.value || 0);
           const add = pageAdderFor(pg);
@@ -560,6 +608,7 @@
           lines.push(`Length (page count: ${pg}): ${money(add)}`);
         }
 
+        // Children pricing details
         if (bt === 'childrens') {
           const pages = Number(childrenPages.value || 0);
           lines.push(`Illustrated pages: ${pages}`);
@@ -594,15 +643,12 @@
         total += svcTotal;
         lines.push(`Selected services: ${money(svcTotal)}`);
 
-        // Payment & timeline adjustments (rush/discount etc.)
+        // Payment adjustments
         const paymentInfo = calcPayments(total);
 
         // Display
         summary.innerHTML = lines.map(l => `• ${l}`).join('<br/>');
         totalEl.textContent = money(paymentInfo.finalTotal);
-
-        // If priority, ensure publish date feels consistent
-        // (We don't force it, but we do keep payment rules consistent.)
       }
 
       // Mark type as user-changed if they manually change it
@@ -616,6 +662,7 @@
         genre, otherGenre,
         wordCount, pageCount,
         childrenPages, hasIllustrations, illustrationMethod, hasStoryboard,
+        coloringHasIllustrations,
         svc.ebook, svc.print, svc.cover, svc.isbn, svc.upload, svc.launch,
         timeline, pubdate, payplan
       ].forEach(el => el && el.addEventListener('input', calc));
