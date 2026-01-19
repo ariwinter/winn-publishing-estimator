@@ -25,14 +25,15 @@
         <option value="travel" data-tier="specialty">Travel</option>
         <option value="young_adult" data-tier="specialty">Young Adult</option>
         <option value="coloring" data-tier="specialty">Coloring Book</option>
+        <option value="romance" data-tier="specialty">Romance</option>
+        <option value="anthology" data-tier="specialty">Anthology</option>
+
       </optgroup>
 
       <optgroup label="Expansion Genres (goal list)">
         <option value="science_fiction" data-tier="expansion">Science Fiction</option>
-        <option value="romance" data-tier="expansion">Romance</option>
         <option value="historical_fiction" data-tier="expansion">Historical Fiction</option>
         <option value="horror" data-tier="expansion">Horror</option>
-        <option value="anthology" data-tier="expansion">Anthology</option>
         <option value="graphic_novel" data-tier="expansion">Graphic Novels</option>
         <option value="adventure" data-tier="expansion">Adventure</option>
         <option value="humor" data-tier="expansion">Humor</option>
@@ -90,9 +91,8 @@
         <label class="winncalc-label" for="winncalc-illustrationMethod">Illustration method</label>
         <select class="winncalc-input" id="winncalc-illustrationMethod">
           <option value="">Select…</option>
-          <option value="ai">AI illustrations ($30/page)</option>
-          <option value="custom">Custom illustrator (quote after review)</option>
-          <option value="unsure">Not sure yet</option>
+          <option value="ai">AI illustrations ( done with Arlo Irving at $30/page)</option>
+          <option value="external">I will hire my own illustrator (recommended: Fiverr)</option>
         </select>
 
         <div class="winncalc-hidden winncalc-hint" id="winncalc-storyboardWrap">
@@ -134,12 +134,16 @@
     <div class="winncalc-subtitle">4) Services Needed</div>
 
     <div class="winncalc-grid">
-      <label class="winncalc-check"><input type="checkbox" id="svc-ebook" /> eBook formatting</label>
-      <label class="winncalc-check"><input type="checkbox" id="svc-print" /> Paperback formatting</label>
-      <label class="winncalc-check"><input type="checkbox" id="svc-cover" /> Cover design</label>
-      <label class="winncalc-check"><input type="checkbox" id="svc-isbn" /> ISBN registration</label>
-      <label class="winncalc-check"><input type="checkbox" id="svc-upload" /> Upload + platform setup</label>
-      <label class="winncalc-check"><input type="checkbox" id="svc-launch" /> Launch kit (basic)</label>
+     <label class="winncalc-check"><input type="checkbox" id="svc-ebook" /> eBook formatting</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-print" /> Paperback formatting</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-hardcover" /> Hardcover formatting</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-cover" /> Cover design</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-isbn" /> ISBN registration</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-upload" /> Upload + platform setup</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-brand" /> Author branding strategy</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-marketing" /> Book marketing strategy</label>
+<label class="winncalc-check"><input type="checkbox" id="svc-listing" /> Book listing optimization</label>
+
     </div>
 
     <div class="winncalc-hint">Tip: Select the deliverables you want included in your estimate.</div>
@@ -268,8 +272,8 @@
         ],
 
         genrePremium: {
-          specialty: 150,
-          expansion: 75,
+          specialty: 0,
+          expansion: 0,
           other: 0
         },
 
@@ -310,12 +314,16 @@
 
       const servicesCard = root.querySelector('#winncalc-servicesCard');
       const svc = {
-        ebook: root.querySelector('#svc-ebook'),
-        print: root.querySelector('#svc-print'),
-        cover: root.querySelector('#svc-cover'),
-        isbn: root.querySelector('#svc-isbn'),
-        upload: root.querySelector('#svc-upload'),
-        launch: root.querySelector('#svc-launch')
+  ebook: root.querySelector('#svc-ebook'),
+  print: root.querySelector('#svc-print'),
+  hardcover: root.querySelector('#svc-hardcover'),
+  cover: root.querySelector('#svc-cover'),
+  isbn: root.querySelector('#svc-isbn'),
+  upload: root.querySelector('#svc-upload'),
+  brand: root.querySelector('#svc-brand'),
+  marketing: root.querySelector('#svc-marketing'),
+  listing: root.querySelector('#svc-listing')
+     
       };
 
       const payCard = root.querySelector('#winncalc-payCard');
@@ -330,8 +338,6 @@
       const summary = root.querySelector('#winncalc-summary');
       const totalEl = root.querySelector('#winncalc-total');
       const savingsEl = root.querySelector('#winncalc-savings');
-      const printBtn = root.querySelector('#winncalc-printBtn');
-
 
       // ---------- HELPERS ----------
       function money(n) {
@@ -415,15 +421,20 @@
         return 0;
       }
 
-      function servicesTotal() {
-        let t = 0;
-        if (svc.ebook.checked) t += 75;
-        if (svc.print.checked) t += 450;
-        if (svc.cover.checked) t += 350;
-        if (svc.isbn.checked) t += 150;
-        if (svc.upload.checked) t += 200;
-        if (svc.launch.checked) t += 250;
-        return t;
+     function servicesTotal() {
+  let t = 0;
+  if (svc.ebook.checked) t += 75;
+  if (svc.print.checked) t += 450;
+  if (svc.hardcover.checked) t += 450;
+  if (svc.cover.checked) t += 350;
+  if (svc.isbn.checked) t += 150;
+  if (svc.upload.checked) t += 200;
+  if (svc.brand.checked) t += 495;
+  if (svc.marketing.checked) t += 495;
+  if (svc.listing.checked) t += 100;
+
+  return t;
+
       }
 
       // ---------- PAYMENTS ----------
@@ -467,7 +478,7 @@
     paymentSummary.innerHTML =
       `• Publishing timeline: <strong>3 months</strong> (tentative)<br/>` +
       `• Pay in full discount (20%): -${money(discount)}<br/>` +
-      `• Due today: <strong>${money(finalTotal)}</strong>`;
+      `• Due at signing: <strong>${money(finalTotal)}</strong>`;
     
     disclaimer.textContent = 'Publishing timeline is tentative and begins after contract + onboarding. Final pricing is confirmed after manuscript review.';
     return { finalTotal, dueToday: finalTotal, discount };
@@ -494,7 +505,7 @@
   paymentSummary.innerHTML =
     `• Publishing timeline: <strong>${monthsSelected} months</strong> (tentative)<br/>` +
     `• Number of payments: <strong>${paymentCount}</strong><br/>` +
-    `• Due today: <strong>${money(payments[0])}</strong><br/>` +
+    `• Due at signing: <strong>${money(payments[0])}</strong><br/>` +
     `• Remaining balance: ${money(roundCents(finalTotal - payments[0]))}<br/>` +
     `• Monthly payment estimate: ${money(monthly)} (final payment may differ by a few cents)`;
 
@@ -623,34 +634,37 @@
         }
 
         // Children pricing details
-        if (bt === 'childrens') {
-          const pages = Number(childrenPages.value || 0);
-          lines.push(`Illustrated pages: ${pages}`);
+if (bt === 'childrens') {
+  const pages = Number(childrenPages.value || 0);
+  lines.push(`Illustrated pages: ${pages}`);
 
-          if (hasIllustrations.value === 'no') {
-            if (illustrationMethod.value === 'ai') {
-              const aiCost = PRICING.aiIllustrationPerPage * pages;
-              total += aiCost;
-              lines.push(`AI illustrations ($${PRICING.aiIllustrationPerPage}/page): ${money(aiCost)}`);
-            } else if (illustrationMethod.value === 'custom') {
-              lines.push('Custom illustrator: quote after review (not included in estimate).');
-            } else if (illustrationMethod.value === 'unsure') {
-              lines.push('Illustrations not decided yet: we’ll confirm options on your consult.');
-            } else {
-              lines.push('Select an illustration method to refine estimate.');
-            }
-          } else {
-            lines.push('Illustrations provided by author: included in base.');
-          }
-        }
+  if (hasIllustrations.value === 'no') {
+    if (illustrationMethod.value === 'ai') {
+      const aiCost = PRICING.aiIllustrationPerPage * pages;
+      total += aiCost;
+      lines.push(`AI illustrations ($${PRICING.aiIllustrationPerPage}/page): ${money(aiCost)}`);
+    } else if (illustrationMethod.value === 'external') {
+      lines.push('Illustrations: author will hire an illustrator (recommended: Fiverr). Cost not included.');
+    } else {
+      lines.push('Select an illustration option to refine estimate.');
+    }
+  } else {
+    lines.push('Illustrations provided by author: included in base.');
+  }
+}
+
 
         // Genre premium
-        const tier = getGenreTier();
-        const premium = PRICING.genrePremium[tier] ?? 0;
-        total += premium;
+const tier = getGenreTier();
+const premium = PRICING.genrePremium[tier] ?? 0;
+total += premium;
 
-        const genreLabel = (g === 'other' && otherGenre.value) ? otherGenre.value : genre.options[genre.selectedIndex].text;
-        lines.push(`Genre (${genreLabel}) premium: ${money(premium)}`);
+const genreLabel = (g === 'other' && otherGenre.value)
+  ? otherGenre.value
+  : genre.options[genre.selectedIndex].text;
+
+lines.push(`Genre (${genreLabel}) premium: ${money(premium)}`);
+
 
         // Services
         const svcTotal = servicesTotal();
@@ -677,8 +691,8 @@
         wordCount, pageCount,
         childrenPages, hasIllustrations, illustrationMethod, hasStoryboard,
         coloringHasIllustrations,
-        svc.ebook, svc.print, svc.cover, svc.isbn, svc.upload, svc.launch,
-        timeline, payplan
+        svc.ebook, svc.print, svc.hardcover, svc.cover, svc.isbn, svc.upload, svc.brand, svc.marketing, svc.listing,
+timeline, payplan
         ].forEach(el => el && el.addEventListener('change', calc))
 
       
