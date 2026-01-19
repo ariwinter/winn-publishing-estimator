@@ -149,9 +149,7 @@
     <div class="winncalc-subtitle">5) Timeline & Payments</div>
 
     <label class="winncalc-label" for="winncalc-timeline">Timeline</label>
-    <select class="winncalc-input" id="winncalc-timeline">
      <select class="winncalc-input" id="winncalc-timeline">
-     <option value="2">2 months</option>
      <option value="3" selected>3 months</option>
     <option value="4">4 months</option>
     <option value="5">5 months</option>
@@ -167,8 +165,6 @@
 <div class="winncalc-hint">
   Publishing date is tentative and based on the timeline you select.
 </div>
-
-    </select>
 
     <div class="winncalc-hint" id="winncalc-estimatedPublish"></div>
 
@@ -194,7 +190,7 @@
   </div>
 
   <style>
-    .wp-winncalc { max-width: 760px; font-family: Arial, sans-serif; line-height: 1.35; }
+    .wp-winncalc {  max-width: 900px; margin: 0 auto; padding: 32px 20px;}
     .wp-winncalc .winncalc-card {
       border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff;
     }
@@ -234,6 +230,7 @@
 
     .wp-winncalc .winncalc-warning { font-weight: 800; }
     .wp-winncalc .winncalc-disclaimer { margin-top: 10px; }
+
   </style>
 
   <script>
@@ -333,6 +330,8 @@
       const summary = root.querySelector('#winncalc-summary');
       const totalEl = root.querySelector('#winncalc-total');
       const savingsEl = root.querySelector('#winncalc-savings');
+      const printBtn = root.querySelector('#winncalc-printBtn');
+
 
       // ---------- HELPERS ----------
       function money(n) {
@@ -680,10 +679,15 @@
         coloringHasIllustrations,
         svc.ebook, svc.print, svc.cover, svc.isbn, svc.upload, svc.launch,
         timeline, payplan
-      ].forEach(el => el && el.addEventListener('input', calc));
+        ].forEach(el => el && el.addEventListener('change', calc))
 
+      
       // Initialize
       calc();
     })();
+    
+
   </script>
 </div>
+
+
